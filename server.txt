@@ -1,0 +1,53 @@
+const express = require("express");
+const path = require("path");
+const app = express();
+const PORT = 3000;
+const statusCode = parseInt(process.env.STATUS_CODE, 10) || 200;
+app.disable('etag');
+
+const filePath = path.join(__dirname, "html", `${statusCode}.html`);
+
+
+if( statusCode == 200){
+    app.get("/",(req,res)=>{
+        res.status(200).sendFile(filePath)
+    })
+}
+if (statusCode == 301 | statusCode == 307){
+    app.get("/",(req,res)=>{
+        
+    res.status(statusCode).sendFile(filePath);
+        
+    })
+
+    app.get("/redirect",(req,res)=>{
+        res.status(200).sendFile(path.join(__dirname, "html", `200.html`))
+    })
+
+}
+    
+if( statusCode == 404){
+    app.get("*",(req,res)=>{
+        res.status(statusCode).sendFile(filePath)
+    })
+}
+
+if (statusCode == 500 ){
+    let requestCount = 0;
+
+    app.get("/", (req, res) => {
+        requestCount++;
+        if (requestCount > 5) {
+            
+            res.status(500).sendFile(filePath);
+            // requestCount--
+        } else {
+            res.sendFile(path.join(__dirname, "html", `200.html`))
+            // requestCount--
+        }
+    });
+}
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
