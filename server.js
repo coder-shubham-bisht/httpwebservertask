@@ -103,7 +103,7 @@ app.get('/admin', verifyToken, (req, res) => {
       return res.status(403).render('index',{
         title:"403 Forbidden",
         status: '403 Forbidden',
-        message: 'You do not have permission to access this resource.',
+        message: 'You do not have permission to access this page , login as admin to access this page.',
       });
     }
   
