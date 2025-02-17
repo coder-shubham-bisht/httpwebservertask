@@ -19,7 +19,7 @@ app.disable('etag');
 // PostgreSQL Connection Configuration
 const pool = new Pool({
   user: "myuser",
-  host: "localhos",
+  host: "localhost",
   database: "mydatabase",
   password: "mypassword",
   port: 5432,
@@ -56,6 +56,8 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+
 // Middleware to check PostgreSQL connection
 app.use(async (req, res, next) => {
   try {
@@ -132,6 +134,7 @@ const verifyToken = (req, res, next) => {
 app.get("/profile",(req,res)=>{
     res.redirect(307,"/")
 })
+
 app.get('/', verifyToken,(req, res) => {
     const taskId=req.query.taskId || 1
     if(!taskId || isNaN(taskId)|| taskId <1){
