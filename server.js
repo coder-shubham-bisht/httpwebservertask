@@ -41,7 +41,7 @@ const tasks= {
   'admin@example.com':["admintask1","admintask2","admintask3"]
 }
 
-let isMaintenance = false; // Toggle this to simulate maintenance mode
+let isMaintenance = process.env.MAINTAINANCE || false; // Toggle this to simulate maintenance mode
 
 // Middleware to simulate 503 Service Unavailable
 app.use((req, res, next) => {
@@ -49,8 +49,8 @@ app.use((req, res, next) => {
         res.set("Retry-After", "60"); // Advise clients to retry after 60 seconds
         res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate"); // Prevent caching
         return res.status(503).render("index", {
-            title: '503 Service Unavailable',
-            status:'503 Service Unavailable',
+            title: 'Service Unavailable',
+            heading:'Service Unavailable',
             message: 'Our service is temporarily unavailable due to maintenance. Please try again later.'
         });
     }
@@ -67,8 +67,8 @@ app.use(async (req, res, next) => {
   } catch (error) {
       console.error("Database Connection Error:", error.message);
       return res.status(500).render('index',{
-        title: '501 Internal Server Error',
-        status:'501 Internal Server Error',
+        title: 'Internal Server Error',
+        heading:'Internal Server Error',
         message: 'Internal Server Error. Please try again later.'
 
       });
@@ -110,18 +110,18 @@ const verifyToken = (req, res, next) => {
   
     if (!token) {
       return res.status(401).render('index',{
-        title: '401 Unauthorized',
-        status:'401 Unauthorized',
-        message: 'You are not aunthenticated, you need to login',
+        title: 'Unauthorized',
+        heading:'Unauthorized',
+        message: 'You are not aunthenticated, you need to login. Go to /login',
       });
     }
   
     jwt.verify(token, SECRET_KEY, (err, decoded) => {
       if (err) {
         return res.status(401).render('index',{
-            title: '401 Unauthorized',
-            status:'401 Unauthorized',
-            message: 'Invalid or expired token,You need to login ',
+            title: 'Unauthorized',
+            heading:'Unauthorized',
+            message: 'Invalid or expired token,You need to login. Go to /login ',
         });
       }
   
@@ -131,21 +131,25 @@ const verifyToken = (req, res, next) => {
     });
   };
 
-app.get("/profile",(req,res)=>{
-    res.redirect(307,"/")
-})
 
-app.get('/', verifyToken,(req, res) => {
-    const taskId=req.query.taskId || 1
-    if(!taskId || isNaN(taskId)|| taskId <1){
-      return res.status(400).render('index',{title:'400 BAD REQUEST',status:'400 BAD REQUEST',message:'Invalid Task Id in request'})
-    }
-    const task = tasks[req.user.email][taskId-1]
-    if(!task){
-     return  res.status(400).render('index',{title:'400 BAD REQUEST',status:'400 BAD REQUEST',message:'Invalid Task Id in request'})
-    }
-    // Return user profile
-    res.status(200).render('index',{title:'My APP',status:'200 OK',message:`welcome ${req.user.email} with task ${task}`});
+app.get("/task",(req,res)=>{
+    res.redirect(307,"/tasks")
+})
+app.get("/tasks",verifyToken,(req,res)=>{
+
+  const taskId=req.query.taskId || 1
+  if(!taskId || isNaN(taskId)|| taskId <1){
+    return res.status(400).render('index',{title:'BAD REQUEST',heading:'BAD REQUEST',message:'Invalid Task Id in request'})
+  }
+  const task = tasks[req.user.email][taskId-1]
+  if(!task){
+   return  res.status(400).render('index',{title:'BAD REQUEST',heading:'BAD REQUEST',message:'Invalid Task Id in request'})
+  }
+        res.status(200).render('tasks',{title:'Tasks',task:`you are redirected from /task to /tasks : ${req.user.email} with ${task}`})
+})
+app.get('/',(req, res) => {
+    // Return Home Page
+    res.status(200).render('index',{title:'HomePage',heading:'HomePage',message:`This is a Webserver showing commonly used Http status codes`});
 });
 
 // Protected route (requires valid token)
@@ -153,16 +157,16 @@ app.get('/admin', verifyToken, (req, res) => {
     // Check if the user has permission (for example, only admins can access this route)
     if (req.user.role !== 'admin') {
       return res.status(403).render('index',{
-        title:"403 Forbidden",
-        status: '403 Forbidden',
-        message: 'You do not have permission to access this page , login as admin to access this page.',
+        title:"Forbidden",
+        heading: 'Forbidden',
+        message: 'You do not have permission to access this page, login as admin to access this page. Go to /login',
       });
     }
   
     // If the user is authorized, send the protected resource
     res.status(200).render('index',{
     title:'Admin',
-    status:'200 Ok',
+    heading:'Admin Page',
     message: `Welcome to the protected resource! ${req.user.email}`,
       
     });
@@ -183,8 +187,14 @@ app.post('/logout', (req, res) => {
 
 
 app.use("*",(req,res)=>{
-    res.status(404).render('index',{title:'404 Error',status:'404 NOT FOUND',message:"The Requested URl Does Not xist"})
+    res.status(404).render('index',{title:'NOT FOUND',heading:'NOT FOUND',message:"The Requested URL Does Not exist"})
 })
 app.listen(PORT, () => {
+  if(isMaintenance){
+    console.log(`Server is running on http://localhost:${PORT} but it is under maintainance` );
+
+  }else{
     console.log(`Server is running on http://localhost:${PORT}`);
+
+  }
 });
