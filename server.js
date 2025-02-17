@@ -1,9 +1,8 @@
 const express = require("express");
 const path = require("path");
 const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-
+const { Pool } = require("pg");
 const app = express();
 const PORT = 3000;
 
@@ -17,7 +16,14 @@ app.set('view engine', 'ejs');
 app.set('views', './views'); 
 app.disable('etag');
 
-
+// PostgreSQL Connection Configuration
+const pool = new Pool({
+  user: "myuser",
+  host: "localhos",
+  database: "mydatabase",
+  password: "mypassword",
+  port: 5432,
+});
 // Static users (one normal user, one admin user)
 const users = {
     'user@example.com': {
@@ -30,6 +36,42 @@ const users = {
     },
 };
 
+const tasks= {
+  'user@example.com':["usertask1","usertask2","usertask3"],
+  'admin@example.com':["admintask1","admintask2","admintask3"]
+}
+
+let isMaintenance = false; // Toggle this to simulate maintenance mode
+
+// Middleware to simulate 503 Service Unavailable
+app.use((req, res, next) => {
+    if (isMaintenance) {
+        res.set("Retry-After", "60"); // Advise clients to retry after 60 seconds
+        res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate"); // Prevent caching
+        return res.status(503).render("index", {
+            title: '503 Service Unavailable',
+            status:'503 Service Unavailable',
+            message: 'Our service is temporarily unavailable due to maintenance. Please try again later.'
+        });
+    }
+    next();
+});
+// Middleware to check PostgreSQL connection
+app.use(async (req, res, next) => {
+  try {
+      const client = await pool.connect(); // Try to connect to PostgreSQL
+      client.release(); // Release connection
+      next(); // Proceed if successful
+  } catch (error) {
+      console.error("Database Connection Error:", error.message);
+      return res.status(500).render('index',{
+        title: '501 Internal Server Error',
+        status:'501 Internal Server Error',
+        message: 'Internal Server Error. Please try again later.'
+
+      });
+  }
+});
 
 // Endpoint for login (authenticate user and set cookie)
 app.post('/login', (req, res) => {
@@ -91,9 +133,16 @@ app.get("/profile",(req,res)=>{
     res.redirect(307,"/")
 })
 app.get('/', verifyToken,(req, res) => {
-  
+    const taskId=req.query.taskId || 1
+    if(!taskId || isNaN(taskId)|| taskId <1){
+      return res.status(400).render('index',{title:'400 BAD REQUEST',status:'400 BAD REQUEST',message:'Invalid Task Id in request'})
+    }
+    const task = tasks[req.user.email][taskId-1]
+    if(!task){
+     return  res.status(400).render('index',{title:'400 BAD REQUEST',status:'400 BAD REQUEST',message:'Invalid Task Id in request'})
+    }
     // Return user profile
-    res.status(200).render('index',{title:'My APP',status:'200 OK',message:`welcome ${req.user.email}`});
+    res.status(200).render('index',{title:'My APP',status:'200 OK',message:`welcome ${req.user.email} with task ${task}`});
 });
 
 // Protected route (requires valid token)
@@ -128,9 +177,6 @@ app.get("/logout",(req,res)=>{
 app.post('/logout', (req, res) => {
     res.clearCookie('auth_token').redirect(302,'/login');
   });
-
-
-
 
 
 app.use("*",(req,res)=>{

@@ -6,7 +6,7 @@ HEAD: Representation headers are included in the response without any message bo
 PUT or POST: The resource describing the result of the action is transmitted in the message body.
 TRACE: The message body contains the request as received by the server.
 
-201 Created
+201 Createt 
 The request succeeded, and a new resource was created as a result. This is typically the response sent after POST requests, or some PUT requests.
 
 202 Accepted
@@ -20,22 +20,27 @@ The URL of the requested resource has been changed permanently. The new URL is g
 307 Temporary Redirect
 The server sends this response to direct the client to get the requested resource at another URI with the same method that was used in the prior request. This has the same semantics as the 302 Found response code, with the exception that the user agent must not change the HTTP method used: if a POST was used in the first request, a POST must be used in the redirected request.
 
+
 400 Bad Request
 The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
+
 
 401 Unauthorized
 Although the HTTP standard specifies "unauthorized", semantically this response means "unauthenticated". That is, the client must authenticate itself to get the requested response.
 
+
 403 Forbidden
 The client does not have access rights to the content; that is, it is unauthorized, so the server is refusing to give the requested resource. Unlike 401 Unauthorized, the client's identity is known to the server.
+
 
 404 Not Found
 The server cannot find the requested resource. In the browser, this means the URL is not recognized. In an API, this can also mean that the endpoint is valid but the resource itself does not exist. Servers may also send this response instead of 403 Forbidden to hide the existence of a resource from an unauthorized client. This response code is probably the most well known due to its frequent occurrence on the web.
 
+
 500 Internal Server Error
 The server has encountered a situation it does not know how to handle. This error is generic, indicating that the server cannot find a more appropriate 5XX status code to respond with.
 
-
+ 
 502 Bad Gateway
 This error response means that the server, while working as a gateway to get a response needed to handle the request, got an invalid response.
 
