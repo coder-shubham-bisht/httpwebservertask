@@ -28,13 +28,12 @@ this will give users Service Unavailable Error with status code 503.
 $ bash ws-start-maintainance.sh 
 
 ## 3. To disable maintaintance mode in  web server
-this will give users Service Unavailable Error with status code 503.  
  
 **execute the below command**   
 $ bash ws-stop-maintainance.sh 
 
 ## 4. To enable Internal Server error in web server
-  
+this will give users Internal Server Error with status code 500. 
 **execute the below command in the terminal**     
 $ bash  ws-start-server-error.sh
 
