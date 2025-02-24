@@ -1,4 +1,4 @@
-# HTTP CODES User Doc
+# HTTP Codes User Doc
 
 ## 1. Go to http://localhost:3000
 
@@ -10,7 +10,7 @@
 
 ![image](https://github.com/user-attachments/assets/d9d3d761-5381-4369-95c8-5b9d1d145cc2)
 
-**Status code 200 Ok**
+**Status code** 200 Ok
 
 ### b. When User gets Internal Server Error Page
 
@@ -20,7 +20,7 @@
 
 ![image](https://github.com/user-attachments/assets/4eec7235-ad15-4500-a9b8-94bb8e08f190)
 
-**Status code 500 Internal Server Error**
+**Status code** 500 Internal Server Error
 
 ### c. When User gets Service Unavailable Error Page
 
@@ -31,7 +31,7 @@
 
 ![image](https://github.com/user-attachments/assets/71e3ddbe-e069-43aa-96f6-d630c6158eae)
 
-**Status code 500 Internal Server Error**
+**Status code** 503 Internal Server Error
 
 ## 2. Go to http://localhost:3000/task
 
@@ -45,11 +45,11 @@ User gets redirected to http://localhost:3000/tasks
 
 ![image](https://github.com/user-attachments/assets/474987d6-7499-4f57-86f7-8f091196ab8b)  
 
-**Status code 307 Temporary Redirect**
+**Status code** 307 Temporary Redirect
 
 ![image](https://github.com/user-attachments/assets/9a41f040-edad-4f83-a063-7a5c1321f439)
 
-**Status code 401 Unauthorized**
+**Status code** 401 Unauthorized
 
 ### b. When user is logged in
 
@@ -59,11 +59,11 @@ User gets redirected to http://localhost:3000/tasks
 
 ![image](https://github.com/user-attachments/assets/3bf00775-0d3d-477f-8771-d7e3554a58a1)
 
-**Status code 307 Temporary Redirect**
+**Status code** 307 Temporary Redirect
 
 ![image](https://github.com/user-attachments/assets/ab8e0a69-b845-42a9-80ee-d7513b6ca6ee)
 
-**Status code 200 OK**
+**Status code** 200 OK
 
 ## 3. Go to http://localhost:3000/login 
 
@@ -84,7 +84,7 @@ User gets redirected to homepage ( http://localhost:3000)
 
 ![image](https://github.com/user-attachments/assets/96383756-e0c0-496b-a35f-bb216714edfc)
 
-**Status Code 302 Found**
+**Status Code** 302 Found
 
 ## 4. Go to http://localhost:3000/admin
 
@@ -97,7 +97,7 @@ User need to login as admin to access this page.
 
 ![image](https://github.com/user-attachments/assets/1f578ea4-8ed2-434b-8d36-6c7ee183eb25)
 
-**Status Code 403 Forbidden**
+**Status Code 403** Forbidden
 
 ## 5. Go to http://localhost:3000/login
 
@@ -126,7 +126,7 @@ User gets Bad request Error.
 
 ![image](https://github.com/user-attachments/assets/4b16f065-f084-44b7-9f25-17192cc7a4ba)
 
-**Status Code 400 Bad Request**
+**Status Code 400** Bad Request
 
 ## 7. Go To http://localhost:3000/logout
 User gets the logout page.  
