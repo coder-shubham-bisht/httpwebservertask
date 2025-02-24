@@ -1,17 +1,17 @@
 # HTTP CODES SERVER DOCS
 
 ## Prequisite
-1. Nodejs installed on your OS
+1. podman installed
 2. bash installed
-3. Project code stored on local system.
-4. open your terminal and go to the directory where project code is stored. 
+3. Project scripts , application image
+4. open your terminal and go to directory where projects scripts are stored
    
-## 1. Start the webserver  
+## 1. Start the webserver and database server.
 **execute the below commnads**
 
-$ bash startdb.sh   
+$ bash create-server-db.sh 
+   
 **output**    
-![image](https://github.com/user-attachments/assets/d0b83228-4dcc-45db-88a6-7c324dda5866)
 
 $ node server.js  
 **output**  
